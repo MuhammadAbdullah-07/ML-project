@@ -25,7 +25,7 @@ class DataIngestion:
         logging.info("Entered the data ingestion method or component")
         try:
             df=pd.read_csv('src/notebook/data/StudentsPerformance.csv')
-            logging.info("Read the dataset as DF")
+            logging.info("Reading the Dataset as DF")
 
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path),exist_ok=True )
 
@@ -54,5 +54,5 @@ if __name__=="__main__":
     train_arr, test_arr,preprocessor_path  = data_transformation.initaite_data_transformation(train_data,test_data)
 
     modeltrainer= ModelTrainer()
-    print(modeltrainer.initaite_model_trainer(train_arr,test_arr))
+    modeltrainer.initaite_model_trainer(train_arr,test_arr)
 

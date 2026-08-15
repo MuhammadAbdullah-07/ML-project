@@ -39,14 +39,44 @@ class ModelTrainer:
             models={
                 "LinearRegression":LinearRegression(),
                 "KNeighborsRegressor":KNeighborsRegressor(),
-                "XGRegressor":XGBRegressor(),
+                "XGBRegressor":XGBRegressor(),
                 "AdaBoostRegressor":AdaBoostRegressor(),
                 "GradientBoostingRegressor":GradientBoostingRegressor(),
                 "RandomForestRegressor":RandomForestRegressor(),
                 "CatBoostRegressor":CatBoostRegressor(verbose=False)
             }
 
-            model_report:dict=evaluate_model(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,models=models)
+            params={
+                "LinearRegression" :  {},
+                "KNeighborsRegressor": {'n_neighbors':[1,2,3,4,5],
+                                        'weights' : ['uniform','distance'],
+                                        'algorithm': ['auto', 'ball_tree', 'kd_tree', 'brute'],
+                                        },
+
+                "XGBRegressor" :        {'learning_rate':[.1,.01,.05,.001],
+                                        'n_estimators':[8,16,32,64,128,256],
+                                        },
+
+                "AdaBoostRegressor" :   {'learning_rate':[.1,.01,.05,.001],
+                                        'n_estimators':[8,16,32,64,128,256],
+                                        },
+
+                "GradientBoostingRegressor" :   {'learning_rate':[.1,.01,.05,.001],
+                                        'n_estimators':[8,16,32,64,128,256],
+                                        'loss' : ['squared_error', 'absolute_error', 'huber', 'quantile']
+                                        },
+                "RandomForestRegressor" : {'n_estimators': [8,16,32,64,128,256],
+                                        'criterion' : ['squared_error', 'absolute_error', 'poisson'],
+                                        'max_features' : ['sqrt', 'log2'],
+                                        },
+
+                "CatBoostRegressor" :   {'depth':[6,8,10],
+                                        'learning_rate':[.1,.01,.05,.001],
+                                        'iterations' : [30,50,100]
+                                        },
+            }
+
+            model_report:dict=evaluate_model(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,models=models,param=params)
 
             ## To get the best model score
             best_model_score= max(sorted(model_report.values()))
@@ -56,7 +86,6 @@ class ModelTrainer:
             best_model_name=list(model_report.keys())[
                 list(model_report.values()).index(best_model_score)
             ]
-
             best_model=models[best_model_name]
 
             if best_model_score < 0.6:
@@ -71,8 +100,10 @@ class ModelTrainer:
             predicted=best_model.predict(X_test)
 
             score= r2_score(y_test,predicted)
-            return score 
-
+            ## Printing the best Model key & Value
+            logging.info(f"Best Model: {best_model_name} with R2 Score: {best_model_score}") 
+            print(f"Best Model Found: {best_model_name},{best_model_score}")
+            return  score
 
         except Exception as e:
             raise CustomException(e,sys)
