@@ -1,18 +1,13 @@
 import os
 import sys
 from dataclasses import dataclass
-
 from catboost import CatBoostRegressor
 from sklearn.ensemble import (AdaBoostRegressor,GradientBoostingRegressor,RandomForestRegressor)
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 from sklearn.neighbors import KNeighborsRegressor
-from xgboost import XGBRegressor
-
-
 from src.exception import CustomException
 from src.logger import logging
-
 from src.utils import save_obj,evaluate_model
 
 
@@ -39,7 +34,6 @@ class ModelTrainer:
             models={
                 "LinearRegression":LinearRegression(),
                 "KNeighborsRegressor":KNeighborsRegressor(),
-                "XGBRegressor":XGBRegressor(),
                 "AdaBoostRegressor":AdaBoostRegressor(),
                 "GradientBoostingRegressor":GradientBoostingRegressor(),
                 "RandomForestRegressor":RandomForestRegressor(),
@@ -51,10 +45,6 @@ class ModelTrainer:
                 "KNeighborsRegressor": {'n_neighbors':[1,2,3,4,5],
                                         'weights' : ['uniform','distance'],
                                         'algorithm': ['auto', 'ball_tree', 'kd_tree', 'brute'],
-                                        },
-
-                "XGBRegressor" :        {'learning_rate':[.1,.01,.05,.001],
-                                        'n_estimators':[8,16,32,64,128,256],
                                         },
 
                 "AdaBoostRegressor" :   {'learning_rate':[.1,.01,.05,.001],
